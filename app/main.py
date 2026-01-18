@@ -1,3 +1,4 @@
+from fastapi import FastAPI
 from app.core.config import settings
 from app.core.middleware import TenantMiddleware
 from app.api.v1.endpoints import documents

@@ -6,9 +6,19 @@ import uuid
 
 class DocumentService:
     def __init__(self):
-        self.mongo = db.mongo_client[settings.MONGODB_DB_NAME]
-        self.es = db.es_client
-        self.redis = db.redis_client
+        # self._mock_storage = [] # Removed mock storage
+
+    @property
+    def mongo(self):
+        return db.mongo_client[settings.MONGODB_DB_NAME]
+
+    @property
+    def es(self):
+        return db.es_client
+        
+    @property
+    def redis(self):
+        return db.redis_client
 
     async def create_document(self, tenant_id: str, doc: DocumentCreate) -> DocumentInDB:
         doc_id = str(uuid.uuid4())
@@ -31,7 +41,7 @@ class DocumentService:
                 "title": doc.title,
                 "content": doc.content,
                 "tenant_id": tenant_id,
-                "created_at": doc.created_at
+                "created_at": document.created_at # Use document.created_at as it's set by the service
             }
         )
         return document
