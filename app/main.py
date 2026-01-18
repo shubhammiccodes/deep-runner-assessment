@@ -2,10 +2,22 @@ from app.core.config import settings
 from app.core.middleware import TenantMiddleware
 from app.api.v1.endpoints import documents
 
+from app.core.db import db
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    db.connect()
+    yield
+    # Shutdown
+    await db.close()
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="High-performance document search API with multi-tenancy support.",
-    version="0.1.0"
+    version="0.1.0",
+    lifespan=lifespan
 )
 
 app.add_middleware(TenantMiddleware)
