@@ -8,6 +8,7 @@ class DocumentService:
     def __init__(self):
         self.mongo = db.mongo_client[settings.MONGODB_DB_NAME]
         self.es = db.es_client
+        self.redis = db.redis_client
 
     async def create_document(self, tenant_id: str, doc: DocumentCreate) -> DocumentInDB:
         doc_id = str(uuid.uuid4())
@@ -53,7 +54,16 @@ class DocumentService:
         return False
 
     async def search_documents(self, tenant_id: str, query: str):
-        # Elasticsearch Query with Tenant Isolation
+        # 1. Check Cache
+        cache_key = f"search:{tenant_id}:{query}"
+        if self.redis:
+            cached_result = await self.redis.get(cache_key)
+            if cached_result:
+                import json
+                print("Cache Hit")
+                return [DocumentInDB(**item) for item in json.loads(cached_result)]
+        
+        # 2. Elasticsearch Query with Tenant Isolation
         body = {
             "query": {
                 "bool": {
@@ -80,6 +90,14 @@ class DocumentService:
                 content=source['content'],
                 created_at=source['created_at']
             ))
+            
+        # 3. Set Cache (TTL 5 minutes)
+        if self.redis and results:
+            import json
+            # Serialize list of models
+            json_data = json.dumps([res.model_dump(mode='json') for res in results])
+            await self.redis.setex(cache_key, 300, json_data)
+            
         return results
 
 document_service = DocumentService()
