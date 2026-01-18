@@ -28,4 +28,46 @@ A prototype of a distributed document search service designed to handle 10+ mill
 *   **Document**: `id` (UUID), `tenant_id` (UUID), `title` (String), `content` (Text), `created_at` (Timestamp).
 
 ## Getting Started
-(Upcoming in Stage 3)
+
+### Prerequisites
+*   Docker & Docker Compose
+*   Python 3.11+
+
+### Installation
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/shubhammiccodes/deep-runner-assessment.git
+    cd deep-runner-assessment
+    ```
+
+2.  **Start Infrastructure**:
+    ```bash
+    docker-compose up -d
+    ```
+    Wait for Elasticsearch to become healthy (~30s).
+
+3.  **Install Dependencies**:
+    ```bash
+    python -m venv venv
+    .\venv\Scripts\activate  # Windows
+    # source venv/bin/activate # Linux/Mac
+    pip install -r requirements.txt
+    ```
+
+4.  **Run the API**:
+    ```bash
+    uvicorn app.main:app --reload
+    ```
+    Access Swagger UI at: `http://localhost:8000/docs`
+
+### Testing
+Run the integration test script to verify the end-to-end flow:
+```bash
+python scripts/test_integration.py
+```
+This script will:
+1. Ingest a document.
+2. Wait for indexing.
+3. Perform a search (Cache Miss).
+4. Perform the same search (Cache Hit).
+5. Clean up.
