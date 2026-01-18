@@ -16,8 +16,8 @@ A prototype of a distributed document search service designed to handle 10+ mill
     *   *Why*: High performance (asyncio), easy documentation (OpenAPI), great ecosystem for backend services.
 *   **Search Engine**: **Elasticsearch** (v8.x).
     *   *Why*: Industry standard for distributed search, supports complex queries, horizontal scaling, and fuzzy matching.
-*   **Database (Metadata)**: **PostgreSQL**.
-    *   *Why*: Reliable relational storage for strict schemas (user/tenant management), robust ACIC properties.
+*   **Database**: **MongoDB**.
+    *   *Why*: Flexible document schema fits the "document search" domain perfectly; easy horizontal scaling (sharding) for millions of records.
 *   **Caching**: **Redis**.
     *   *Why*: Low-latency in-memory store for result caching and rate-limiting buckets.
 *   **Containerization**: **Docker** & **Docker Compose**.
