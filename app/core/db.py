@@ -27,4 +27,33 @@ class Database:
             await self.redis_client.close()
         print("Closed database connections")
 
+    async def check_health(self):
+        status = {"mongodb": "down", "elasticsearch": "down", "redis": "down"}
+        
+        # Check MongoDB
+        try:
+            if self.mongo_client:
+                await self.mongo_client.admin.command('ping')
+                status["mongodb"] = "up"
+        except Exception:
+            pass
+
+        # Check Elasticsearch
+        try:
+            if self.es_client:
+                if await self.es_client.ping():
+                    status["elasticsearch"] = "up"
+        except Exception:
+            pass
+
+        # Check Redis
+        try:
+            if self.redis_client:
+                if await self.redis_client.ping():
+                    status["redis"] = "up"
+        except Exception:
+            pass
+            
+        return status
+
 db = Database()

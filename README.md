@@ -27,6 +27,11 @@ A prototype of a distributed document search service designed to handle 10+ mill
 *   **Tenant**: `id` (UUID), `api_key` (String), `name` (String), `rate_limit_tier` (Enum).
 *   **Document**: `id` (UUID), `tenant_id` (UUID), `title` (String), `content` (Text), `created_at` (Timestamp).
 
+## Documentation
+*   [Architecture Design](docs/architecture/design.md): High-level diagrams, data flow, and multi-tenancy strategy.
+*   [Production Readiness](docs/production_readiness.md): Scalability to 100x growth, security, and observability.
+*   [Experience Showcase](docs/experience_showcase.md): Examples of past distributed systems work and incident resolution.
+
 ## Getting Started
 
 ### Prerequisites

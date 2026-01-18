@@ -26,7 +26,9 @@ app.include_router(documents.router, prefix=f"{settings.API_V1_STR}/documents", 
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "services": {"database": "unknown", "search": "unknown"}}
+    services_status = await db.check_health()
+    overall = "healthy" if all(s == "up" for s in services_status.values()) else "unhealthy"
+    return {"status": overall, "services": services_status}
 
 @app.get("/")
 async def root():
