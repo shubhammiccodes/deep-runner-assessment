@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, Request, HTTPException
 from typing import List
 from app.models.document import DocumentCreate, DocumentResponse
 from app.services.document_service import document_service
-from app.core.rate_limit import check_rate_limit
+from app.core.rate_limit import RateLimiter
 
-router = APIRouter(dependencies=[Depends(check_rate_limit)])
+router = APIRouter(dependencies=[Depends(RateLimiter(limit=60, window=60))])
 
 @router.post("/", response_model=DocumentResponse)
 async def create_document(request: Request, doc: DocumentCreate):
